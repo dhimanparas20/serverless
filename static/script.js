@@ -5,7 +5,7 @@ const WEBSOCKET_BASEPATH = config.WEBSOCKET_BASEPATH;
 const USE_CREDS = config.USE_CREDS;
 const USER = config.USER;
 const PASS = config.PASS;
-const USE_WSS = config.USE_WSS; // Set to true for wss://, false for ws://
+const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
 
 const token = config.TOKEN;
 const user = config.USER_NAME;
@@ -32,7 +32,7 @@ function connect() {
     const options = {
         onSuccess: onConnect,
         onFailure: onFailure,
-        useSSL: USE_WSS, // Use SSL if USE_WSS is true
+        useSSL: WEBSOCK_USE_SSL, // Use SSL 
         cleanSession: true,
     };
 

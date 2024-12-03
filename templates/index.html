@@ -7,6 +7,9 @@
     <link rel="icon" type="image/x-icon" href="static/img/user.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="static/styles.css">
+    <script>
+        const config = {{ config|tojson }};
+    </script>
 </head>
 <body>
     <div class="container">
@@ -52,9 +55,6 @@
         </main>
     </div>
     <div class="loader"></div>
-    <script>
-        const config = {{ config|tojson }};
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <script src="static/script.js"></script>
 </body>
