@@ -21,7 +21,8 @@ default_config = {
     "TOKEN": os.getenv("TOKEN", "default_token"),
     "USER_NAME": os.getenv("USER_NAME", "user"),
     "PINS": os.getenv("PINS", "D1,D2,D3,D4").split(","),
-    "USE_WSS": os.getenv("USE_WSS", "true").lower() == "true"
+    "USE_WSS": os.getenv("USE_WSS", "true").lower() == "true",
+    "SWITCH_NAME": os.getenv("SWITCH_NAME", "D1,D2,D3,D4").split(",")
 }
 
 # Serve index.html with variables
