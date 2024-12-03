@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - MST Automations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/user.png') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/logo.jpeg') }}" alt="Logo" class="logo">
+            </div>
+            <h1 class="glass-text">Login to MST Automations</h1>
+        </header>
+        <main>
+            <form action="/login" method="POST" class="login-form">
+                {% if error %}
+                <div class="error glass-text">{{ error }}</div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="token" class="glass-text">Enter Token</label>
+                    <input type="text" id="token" name="token" class="form-input" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

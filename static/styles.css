@@ -43,6 +43,50 @@ header {
     margin-bottom: 2rem;
 }
 
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-input {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--primary-color);
+}
+
+.logout-button {
+    background-color: transparent;
+    border: none;
+    color: #007bff;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.logout-button:hover {
+    color: #0056b3;
+}
+
+.error {
+    color: var(--danger-color);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
 .logo-container {
     width: 60px;
     height: 60px;
