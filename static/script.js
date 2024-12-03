@@ -15,7 +15,6 @@ const pins = config.PINS;
 const switches = document.querySelectorAll('.switch input');
 const messageElement = document.getElementById('message');
 const timeElement = document.getElementById('time');
-const logoutBtn = document.getElementById('logoutBtn');
 const loader = document.querySelector('.loader');
 
 let isOnline = false;
@@ -147,11 +146,6 @@ switches.forEach(switchElement => {
             publishMessage(`${token}/${pin}`, state);
         }
     });
-});
-
-logoutBtn.addEventListener('click', () => {
-    // Add logout functionality here
-    console.log('Logout clicked');
 });
 
 // Initialize

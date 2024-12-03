@@ -1,0 +1,15 @@
+#Websocket
+WEBSOCK_BROKER_ADDRESS=test.mosquitto.org
+WEBSOCKET_BASEPATH=
+WEBSOCK_PORT=8081
+WEBSOCK_USE_SSL=false
+USER=your_username
+PASS=your_password
+TOKEN=5a234
+USER_NAME=Paras
+PINS=D1,D2,D3,D4
+USE_WSS=true
+
+#Server
+DEBUG=true
+PORT=5000
