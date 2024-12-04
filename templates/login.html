@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 </head>
-<body>
+<body style="background-image: url('{{ WALL_URL or "/static/img/wall.jpg" }}');">
     <div class="container">
         <header>
             <div class="logo-container">

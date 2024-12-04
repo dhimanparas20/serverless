@@ -27,7 +27,7 @@ default_config = {
     "USER_NAME": os.getenv("USER_NAME", "User"),
     "PINS": os.getenv("PINS", "D1,D2,D3,D4").split(","),
     "SWITCH_NAME": os.getenv("SWITCH_NAME", "D1,D2,D3,D4").split(","),
-    "WALL_URL": os.getenv("WALL_URL", "img/wall.jpg"),
+    "WALL_URL": os.getenv("WALL_URL", "/static/img/wall.jpg"),
 }
 
 # Resource classes
@@ -44,7 +44,7 @@ class Login(Resource):
         # If already logged in, redirect to index
         if 'logged_in' in session:
             return redirect(url_for('index'))
-        return make_response(render_template('login.html', error=None))
+        return make_response(render_template('login.html', error=None, WALL_URL=default_config['WALL_URL']))
 
     def post(self):
         token = request.form.get('token', '')
@@ -52,7 +52,7 @@ class Login(Resource):
             session['logged_in'] = True
             return redirect(url_for('index'))
         else:
-            return make_response(render_template('login.html', error="Invalid token"))
+            return make_response(render_template('login.html', error="Invalid token",WALL_URL=default_config['WALL_URL']))
 
 class Logout(Resource):
     def get(self):
