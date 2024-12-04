@@ -21,7 +21,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* background-image: url("img/wall.jpg"); */
     background-position: center;
     background-size: cover;
 }
@@ -32,18 +31,17 @@ body {
     padding: 2rem;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(4px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .container2 {
     display: flex;
-    justify-content: center; /* Center them horizontally */
-    align-items: center; /* Align them vertically */
-    gap: 1rem; /* Add spacing between the elements */
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
-
 
 header {
     display: flex;
@@ -131,7 +129,7 @@ h1 {
 
 .switch-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -168,7 +166,8 @@ h1 {
     right: 0;
     bottom: 0;
     background-color: rgba(102, 102, 102, 0.5);
-    transition: .4s;
+    transition: 0.3s ease;
+    border-radius: 34px;
 }
 
 .slider:before {
@@ -179,11 +178,12 @@ h1 {
     left: 4px;
     bottom: 4px;
     background-color: var(--text-color);
-    transition: .4s;
+    transition: 0.3s ease;
+    border-radius: 50%;
 }
 
 input:checked + .slider {
-    background-color: rgba(33, 237, 88, 0.8);
+    background-color: var(--primary-color);
 }
 
 input:focus + .slider {
@@ -194,12 +194,51 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
-.slider.round {
-    border-radius: 34px;
+input:checked + .slider:after {
+    content: "✓";
+    position: absolute;
+    color: #fff;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.slider.round:before {
-    border-radius: 50%;
+.switch-container{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.switch-container input {
+    transform: scale(1.2);
+}
+
+.switch-container label {
+    font-size: 1.1rem;
+}
+
+/* CSS Update */
+.save-token {
+    display: flex;
+    align-items: center; /* Aligns checkbox and label in the same row */
+    gap: 0.5rem; /* Adds some space between the checkbox and the label */
+}
+
+.save-token input {
+    transform: scale(1.2); /* Slightly increase the size of the checkbox */
+}
+
+.save-token label {
+    font-size: 1.1rem; /* Increase font size for the label */
+    color: rgba(255, 255, 255, 0.8); /* Slightly adjust label color for better readability */
+}
+
+/* Optional: Change font size when checkbox is checked */
+.save-token input:checked + label {
+    font-weight: bold; /* Makes the label bold when the checkbox is checked */
 }
 
 .btn {

@@ -6,9 +6,7 @@
     <title>Login - MST Automations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/user.png') }}">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
 </head>
 <body style="background-image: url('{{ WALL_URL or "/static/img/wall.jpg" }}');">
     <div class="container">
@@ -27,9 +25,40 @@
                     <label for="token" class="glass-text">Enter Token</label>
                     <input type="text" id="token" name="token" class="form-input" required>
                 </div>
+                
+                <!-- Save Token Checkbox -->
+                <div class="form-group save-token">
+                    <input type="checkbox" id="saveToken" name="saveToken">
+                    <label for="saveToken" class="glass-text">Save token for future use</label>
+                </div>
+                
                 <button type="submit" class="btn">Login</button>
             </form>
         </main>
     </div>
+
+    <!-- Include JavaScript to handle saving and auto-filling token -->
+    <script>
+        window.onload = function() {
+            // Check if the token is saved in localStorage and pre-fill the form
+            const savedToken = localStorage.getItem('savedToken');
+            if (savedToken) {
+                document.getElementById('token').value = savedToken;
+                document.getElementById('saveToken').checked = true;
+            }
+        };
+
+        // Handle form submission to save the token if checkbox is checked
+        document.querySelector('.login-form').addEventListener('submit', function(e) {
+            const token = document.getElementById('token').value;
+            const saveToken = document.getElementById('saveToken').checked;
+            
+            if (saveToken) {
+                localStorage.setItem('savedToken', token); // Save token in localStorage
+            } else {
+                localStorage.removeItem('savedToken'); // Remove token if not saved
+            }
+        });
+    </script>
 </body>
 </html>

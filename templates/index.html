@@ -6,10 +6,6 @@
     <title>MST Automations</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/user.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
-    <script>
-        const config = {{ config|tojson }};
-    </script>
 </head>
 <body style="background-image: url('{{ config.WALL_URL or "static/img/wall.jpg" }}');">
     <div class="container">
@@ -61,6 +57,9 @@
     </div>
     <div class="loader"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <script>
+        const config = {{ config|tojson }};
+    </script>
     <script src="static/script.js"></script>
 </body>
 </html>
