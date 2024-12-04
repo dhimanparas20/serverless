@@ -6,12 +6,15 @@ WEBSOCK_USE_SSL=true
 USER=
 PASS=
 TOKEN=
-USER_NAME=USer
+USER_NAME=User
 PINS=D1,D2,D3,D4
-SWITCH_NAME=Light,Fan,Speaker,Lamp
+
+#UI Customization
+SWITCH_NAME=Light,Speaker,Fan,Lamp
+WALL_URL=
 
 #Server
-DEBUG=true
+DEBUG=false
 PORT=5000
 HOST=127.0.0.1
 SECRET_KEY=your_secret_key

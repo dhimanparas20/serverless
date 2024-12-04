@@ -11,7 +11,7 @@
         const config = {{ config|tojson }};
     </script>
 </head>
-<body>
+<body style="background-image: url('{{ config.WALL_URL or "static/img/wall.jpg" }}');">
     <div class="container">
         <header>
             <div class="logo-container">
@@ -20,8 +20,10 @@
             <h1 class="glass-text">MST Automations</h1>
         </header>
         <main>
-            <div id="time" class="time glass-text"></div>
-            <div id="message" class="message glass-text"></div>
+            <div class="container2">
+                <div id="time" class="time glass-text"></div>
+                <div id="message" class="message glass-text"></div>
+            </div>
             <div class="switch-container">
                 <div class="switch-wrapper">
                     <label for="switch1" class="switch-label glass-text">{{config['SWITCH_NAME'][0]}}</label>
