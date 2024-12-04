@@ -20,6 +20,7 @@ default_config = {
     "WEBSOCK_BROKER_ADDRESS": os.getenv("WEBSOCK_BROKER_ADDRESS", "test.mosquitto.org"),
     "WEBSOCKET_BASEPATH": os.getenv("WEBSOCKET_BASEPATH", ""),
     "WEBSOCK_PORT": int(os.getenv("WEBSOCK_PORT", 8081)),
+    "USE_CREDS": os.getenv("USE_CREDS", "false").lower() == "true",
     "WEBSOCK_USE_SSL": os.getenv("WEBSOCK_USE_SSL", "true").lower() == "true",
     "USER": os.getenv("USER", ""),
     "PASS": os.getenv("PASS", ""),
