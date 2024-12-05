@@ -9,6 +9,9 @@ PASS=
 TOKEN=
 USER_NAME=User
 PINS=D1,D2,D3,D4
+QOS=0
+CLEAN_SESSION=true
+RETAINED=true
 
 #UI Customization
 SWITCH_NAME=Light,Speaker,Fan,Lamp

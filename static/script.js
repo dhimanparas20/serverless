@@ -6,6 +6,9 @@ const USE_CREDS = config.USE_CREDS;
 const USER = config.USER;
 const PASS = config.PASS;
 const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
+const CLEAN_SESSION = config.CLEAN_SESSION
+const RETAINED = config.RETAINED
+const QOS = RETAINED.QOS
 
 const token = config.TOKEN;
 const user = config.USER_NAME;
@@ -32,8 +35,8 @@ function connect() {
     const options = {
         onSuccess: onConnect,
         onFailure: onFailure,
-        useSSL: WEBSOCK_USE_SSL, // Use SSL 
-        cleanSession: true,
+        useSSL: WEBSOCK_USE_SSL, // Use SSL // Use SSL 
+        cleanSession: CLEAN_SESSION,
     };
 
     if (USE_CREDS) {
@@ -84,7 +87,8 @@ function onMessageArrived(message) {
 function publishMessage(topic, msg) {
     const message = new Paho.MQTT.Message(msg);
     message.destinationName = topic;
-    message.retained = true;
+    message.qos = QOS;
+    message.retained = RETAINED;
     client.send(message);
 }
 
