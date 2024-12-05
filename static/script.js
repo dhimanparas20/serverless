@@ -8,7 +8,7 @@ const PASS = config.PASS;
 const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
 const CLEAN_SESSION = config.CLEAN_SESSION
 const RETAINED = config.RETAINED
-const QOS = RETAINED.QOS
+const QOS = config.QOS
 
 const token = config.TOKEN;
 const user = config.USER_NAME;
@@ -76,10 +76,13 @@ function onConnectionLost(responseObject) {
 
 function onMessageArrived(message) {
     const [messageToken, device] = message.destinationName.split('/');
+    const payload = message.payloadString;
+
     if (pins.includes(device)) {
-        updateSwitch(device, message.payloadString);
+        // Update switch state based on retained message
+        updateSwitch(device, payload);
     } else if (device === 'online') {
-        isOnline = message.payloadString === '1';
+        isOnline = payload === '1';
         updateStatus();
     }
 }
