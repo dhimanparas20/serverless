@@ -18,7 +18,7 @@ HOST = os.getenv("HOST", "127.0.0.1")
 # Environment variables with defaults
 default_config = {
     "WEBSOCK_BROKER_ADDRESS": os.getenv("WEBSOCK_BROKER_ADDRESS", "test.mosquitto.org"),
-    "WEBSOCKET_BASEPATH": os.getenv("WEBSOCKET_BASEPATH", ""),
+    "WEBSOCKET_BASEPATH": os.getenv("WEBSOCKET_BASEPATH", "/mqtt"),
     "WEBSOCK_PORT": int(os.getenv("WEBSOCK_PORT", 8081)),
     "QOS": int(os.getenv("QOS", 0)),
     "USE_CREDS": os.getenv("USE_CREDS", "false").lower() == "true",
