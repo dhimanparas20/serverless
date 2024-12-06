@@ -77,6 +77,7 @@ function onConnectionLost(responseObject) {
 function onMessageArrived(message) {
     const [messageToken, device] = message.destinationName.split('/');
     const payload = message.payloadString;
+    // console.log(messageToken,device,payload)
 
     if (pins.includes(device)) {
         // Update switch state based on retained message
