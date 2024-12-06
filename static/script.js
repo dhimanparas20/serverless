@@ -6,6 +6,7 @@ const USE_CREDS = config.USE_CREDS;
 const USER = config.USER;
 const PASS = config.PASS;
 const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
+const WEBSOCKET_RECONNECT_TIMEOUT = 5000
 const CLEAN_SESSION = config.CLEAN_SESSION
 const RETAINED = config.RETAINED
 const QOS = config.QOS
@@ -61,7 +62,7 @@ function onFailure(error) {
     isOnline = false;
     showLoader(false);
     updateStatus();
-    setTimeout(connect, 2000);
+    setTimeout(connect, WEBSOCKET_RECONNECT_TIMEOUT);
 }
 
 function onConnectionLost(responseObject) {
@@ -69,7 +70,7 @@ function onConnectionLost(responseObject) {
     showLoader(false);
     if (responseObject.errorCode !== 0) {
         console.log('Connection lost:', responseObject.errorMessage);
-        setTimeout(connect, 2000);
+        setTimeout(connect, WEBSOCKET_RECONNECT_TIMEOUT);
     }
     updateStatus();
 }
