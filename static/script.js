@@ -24,7 +24,7 @@ const loader = document.querySelector('.loader');
 let isOnline = false;
 
 // MQTT client setup
-const clientId = `${token}/webuser${Math.floor(Math.random() * 9990 + 10)}`;
+const clientId = `${token}/webuser_${Math.floor(Math.random() * 9990 + 10)}`;
 const client = new Paho.MQTT.Client(WEBSOCK_BROKER_ADDRESS, WEBSOCK_PORT, WEBSOCKET_BASEPATH,clientId);
 
 client.onConnectionLost = onConnectionLost;
