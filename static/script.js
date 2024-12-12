@@ -98,10 +98,22 @@ function publishMessage(topic, msg) {
 }
 
 function updateSwitch(pin, state) {
-    const switchElement = document.getElementById(`switch${pin.slice(1)}`);
-    if (switchElement) {
-        switchElement.checked = state === '1';
+    if (pin === "D5"){
+        let jsonObject = JSON.parse(state);
+        // console.log("Temperatue: "+jsonObject.temperature)
+        // console.log("Humidity: "+jsonObject.humidity)
+        // console.log("Feels Like: "+jsonObject.heat_index)
+        $('#tmp').text("🌡 "+jsonObject.temperature+"°C, ");
+        $('#hi').text("🙎‍♂️ "+jsonObject.heat_index+"°C");
+        $('#hmdt').text("💧 "+jsonObject.humidity+"%, ");
+
     }
+    else{
+        const switchElement = document.getElementById(`switch${pin.slice(1)}`);
+        if (switchElement) {
+            switchElement.checked = state === '1';
+        }
+    }    
 }
 
 function updateStatus() {
@@ -185,9 +197,9 @@ function fetchAndSendLocation() {
 
             // Update the HTML dynamically
             // $('#weather_detail_header').text(city+" Weather");
-            $('#location').text(city);
+            $('#location').text("🌍"+city);
             // $('#state').text(state);
-            $('#pincode').text(pincode+", ");
+            $('#pincode').text("📫"+pincode+", ");
 
             // console.log(`City: ${city}, State: ${state}, Pincode: ${pincode}`);
 
@@ -206,13 +218,12 @@ function fetchAndSendLocation() {
                     const weather = response.weather_data;
 
                     // Update weather details in the HTML
-                    $('#temp').text(weather.tmp || '-');
+                    $('#temp').text("🌡️"+weather.tmp || '-');
+                    $('#wind_speed').text(" 🌬️"+weather.ws || '-');
+                    $('#desc').text(" ⏹"+weather.dc || '-');
                     // $('#precipitation').text(weather.ppt || '-');
-                    $('#humidity').text(weather.hm || '-');
-                    $('#wind_speed').text(weather.ws || '-');
-                    $('#desc').text(weather.dc || '-');
+                    // $('#humidity').text(weather.hm || '-');
                     if (weather.img_src) {
-
                         $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
                     }
 
