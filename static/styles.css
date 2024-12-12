@@ -151,14 +151,21 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin: 0.5rem 0;
+}
+
+.switch-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .switch-wrapper {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 
 .switch-label {
     font-size: 1.1rem;

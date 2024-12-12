@@ -163,7 +163,6 @@ function fetchAndSendLocation() {
     // $('#contentContainer').addClass('hidden');
 
     if (navigator.geolocation) {
-        console.log("locaitona llowed")
         navigator.geolocation.getCurrentPosition(success, error);
     } else {
         console.error("Geolocation is not supported by this browser.");
@@ -205,7 +204,6 @@ function fetchAndSendLocation() {
                 success: function(response) {
                     // console.log('Weather Data:', response.weather_data);
                     const weather = response.weather_data;
-                    // console.log(weather)
 
                     // Update weather details in the HTML
                     $('#temp').text(weather.tmp || '-');
@@ -214,7 +212,6 @@ function fetchAndSendLocation() {
                     $('#wind_speed').text(weather.ws || '-');
                     $('#desc').text(weather.dc || '-');
                     if (weather.img_src) {
-                    // console.log(weather.img_src)
 
                         $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
                     }
@@ -250,7 +247,6 @@ function fetchAndSendLocation() {
 }
 
 function showGeolocationPrompt() {
-    console.log("showGeolocationPrompt()")
     $('#geolocationPrompt').removeClass('hidden');
 }
 
