@@ -3,8 +3,8 @@ const WEBSOCK_BROKER_ADDRESS = config.WEBSOCK_BROKER_ADDRESS;
 const WEBSOCK_PORT = config.WEBSOCK_PORT;
 const WEBSOCKET_BASEPATH = config.WEBSOCKET_BASEPATH;
 const USE_CREDS = config.USE_CREDS;
-const USER = config.USER;
-const PASS = config.PASS;
+const MQTT_USER = config.MQTT_USER;
+const MQTT_PASS = config.MQTT_PASS;
 const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
 const WEBSOCKET_RECONNECT_TIMEOUT = 5000
 const CLEAN_SESSION = config.CLEAN_SESSION
@@ -41,8 +41,8 @@ function connect() {
     };
 
     if (USE_CREDS) {
-        options.userName = USER;
-        options.password = PASS;
+        options.userName = MQTT_USER;
+        options.password = MQTT_PASS;
     }
 
     client.connect(options);
@@ -157,8 +157,113 @@ switches.forEach(switchElement => {
     });
 });
 
+// Function to fetch and send location data
+function fetchAndSendLocation() {
+    // $('#loadingAnimation').removeClass('hidden');
+    // $('#contentContainer').addClass('hidden');
+
+    if (navigator.geolocation) {
+        console.log("locaitona llowed")
+        navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+        showGeolocationPrompt();
+    }
+
+    async function success(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+            // Reverse Geocoding with Nominatim API
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+            const data = await response.json();
+
+            const city = data.address.city || data.address.town || data.address.village || "Unknown City";
+            const state = data.address.state || "Unknown State";
+            const pincode = data.address.postcode || "Unknown Pincode";
+            // console.log(city,state,pincode)
+
+            // Update the HTML dynamically
+            // $('#weather_detail_header').text(city+" Weather");
+            $('#location').text(city);
+            // $('#state').text(state);
+            $('#pincode').text(pincode+", ");
+
+            // console.log(`City: ${city}, State: ${state}, Pincode: ${pincode}`);
+
+            // Send the data to the backend via AJAX
+            $.ajax({
+                url: '/get_weather',
+                method: 'POST',
+                contentType: 'application/json', // Set the content type to JSON
+                data: JSON.stringify({
+                    city: city,
+                    state: state,
+                    pincode: pincode
+                }),
+                success: function(response) {
+                    // console.log('Weather Data:', response.weather_data);
+                    const weather = response.weather_data;
+                    // console.log(weather)
+
+                    // Update weather details in the HTML
+                    $('#temp').text(weather.tmp || '-');
+                    // $('#precipitation').text(weather.ppt || '-');
+                    $('#humidity').text(weather.hm || '-');
+                    $('#wind_speed').text(weather.ws || '-');
+                    $('#desc').text(weather.dc || '-');
+                    if (weather.img_src) {
+                    // console.log(weather.img_src)
+
+                        $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
+                    }
+
+                    // // Update favicon and title
+                    // if (weather.img_src) {
+                    //     $('#favicon').attr('href', weather.img_src);
+                    // }
+                    // document.getElementById('pageTitle').textContent = `${city}, ${state} Weather`;
+
+                    // // Hide loading animation and show content
+                    // $('#loadingAnimation').addClass('hidden');
+                    // $('#contentContainer').removeClass('hidden');
+                },
+                error: function(err) {
+                    console.error('Error fetching weather data:', err);
+                    // $('#loadingAnimation').addClass('hidden');
+                    // $('#contentContainer').removeClass('hidden');
+                }
+            });
+        } catch (err) {
+            console.error("Error fetching location details:", err);
+            // $('#loadingAnimation').addClass('hidden');
+            // $('#contentContainer').removeClass('hidden');
+        }
+    }
+
+    function error(err) {
+        console.error(`Error (${err.code}): ${err.message}`);
+        // $('#loadingAnimation').addClass('hidden');
+        showGeolocationPrompt();
+    }
+}
+
+function showGeolocationPrompt() {
+    console.log("showGeolocationPrompt()")
+    $('#geolocationPrompt').removeClass('hidden');
+}
+
+$('#enableLocation').on('click', function() {
+    $('#geolocationPrompt').addClass('hidden');
+    fetchAndSendLocation();
+});
+
 // Initialize
 connect();
+fetchAndSendLocation();
 setInterval(updateTime, 1000);
+setInterval(fetchAndSendLocation, 3600*1000);
 window.addEventListener('online', updateStatus);
 window.addEventListener('offline', updateStatus);
+
