@@ -202,7 +202,7 @@ function fetchAndSendLocation() {
                     pincode: pincode
                 }),
                 success: function(response) {
-                    console.log('Weather Data:', response.weather_data);
+                    // console.log('Weather Data:', response.weather_data);
                     const weather = response.weather_data;
 
                     // Update weather details in the HTML
