@@ -224,7 +224,7 @@ function fetchAndSendLocation() {
                     $('#desc').text(" ▫️"+weather.dc || '-');
                     // $('#precipitation').text(weather.ppt || '-');
                     // $('#humidity').text(weather.hm || '-');
-                    console.log("img source:"+weather.img_src)
+                    // console.log("img source:"+weather.img_src)
                     if (weather.img_src) {
                         $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
                     }
