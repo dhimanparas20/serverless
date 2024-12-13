@@ -6,7 +6,7 @@ const USE_CREDS = config.USE_CREDS;
 const MQTT_USER = config.MQTT_USER;
 const MQTT_PASS = config.MQTT_PASS;
 const WEBSOCK_USE_SSL = config.WEBSOCK_USE_SSL; // Set to true for wss://, false for ws://
-const WEBSOCKET_RECONNECT_TIMEOUT = 5000
+const WEBSOCKET_RECONNECT_TIMEOUT = config.WEBSOCKET_RECONNECT_TIMEOUT
 const CLEAN_SESSION = config.CLEAN_SESSION
 const RETAINED = config.RETAINED
 const QOS = config.QOS
@@ -30,7 +30,7 @@ const client = new Paho.MQTT.Client(WEBSOCK_BROKER_ADDRESS, WEBSOCK_PORT, WEBSOC
 client.onConnectionLost = onConnectionLost;
 client.onMessageArrived = onMessageArrived;
 
-// Functions
+// Connect to MQTT Broker Server
 function connect() {
     showLoader(true);
     const options = {
@@ -48,6 +48,7 @@ function connect() {
     client.connect(options);
 }
 
+// Handler if Connection Successful
 function onConnect() {
     console.log('Connected to MQTT broker');
     isOnline = true;
@@ -57,6 +58,7 @@ function onConnect() {
     updateStatus();
 }
 
+// Handler if Connection Failed
 function onFailure(error) {
     console.log('Failed to connect:', error.errorMessage);
     isOnline = false;
@@ -65,6 +67,7 @@ function onFailure(error) {
     setTimeout(connect, WEBSOCKET_RECONNECT_TIMEOUT);
 }
 
+// Handler if Connection Lost
 function onConnectionLost(responseObject) {
     isOnline = false;
     showLoader(false);
@@ -75,6 +78,7 @@ function onConnectionLost(responseObject) {
     updateStatus();
 }
 
+// Handler if a message arrives on subscribed topic
 function onMessageArrived(message) {
     const [messageToken, device] = message.destinationName.split('/');
     const payload = message.payloadString;
@@ -89,6 +93,7 @@ function onMessageArrived(message) {
     }
 }
 
+// Handler to publish message on a topic
 function publishMessage(topic, msg) {
     const message = new Paho.MQTT.Message(msg);
     message.destinationName = topic;
@@ -139,24 +144,6 @@ function enableSwitches(enable) {
     switches.forEach(switchElement => {
         switchElement.disabled = !enable;
     });
-}
-
-function showLoader(show) {
-    loader.style.display = show ? 'block' : 'none';
-}
-
-function updateTime() {
-    const now = new Date();
-    const options = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: true
-    };
-    timeElement.textContent = now.toLocaleString(undefined, options).replace(', ', ' - ');
 }
 
 // Event listeners
@@ -215,13 +202,14 @@ function fetchAndSendLocation() {
                     pincode: pincode
                 }),
                 success: function(response) {
-                    // console.log('Weather Data:', response.weather_data);
+                    console.log('Weather Data:', response.weather_data);
                     const weather = response.weather_data;
 
                     // Update weather details in the HTML
                     $('#temp').text("🌡️"+weather.tmp || '-');
                     $('#wind_speed').text(" 🌬️"+weather.ws || '-');
                     $('#desc').text(" ▫️"+weather.dc || '-');
+                    $('#last_fetch').text(" ⏱️"+formatTime() || '-');
                     // $('#precipitation').text(weather.ppt || '-');
                     // $('#humidity').text(weather.hm || '-');
                     // console.log("img source:"+weather.img_src)
@@ -263,16 +251,62 @@ function showGeolocationPrompt() {
     $('#geolocationPrompt').removeClass('hidden');
 }
 
+// Button prompt that shows to enable location
 $('#enableLocation').on('click', function() {
     $('#geolocationPrompt').addClass('hidden');
     fetchAndSendLocation();
 });
 
+// Loader Animation
+function showLoader(show) {
+    loader.style.display = show ? 'block' : 'none';
+}
+
+// Main Clock time
+function updateTime() {
+    const now = new Date();
+    const options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true
+    };
+    timeElement.textContent = now.toLocaleString(undefined, options).replace(', ', ' - ');
+}
+
+// Time for Weather last fetched
+function formatTime() {
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    // Determine AM or PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    // Convert hours to 12-hour format
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be 12 for 12-hour format
+
+    // Pad single digit minutes and seconds with a leading zero
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    // Format the time string
+    const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+    
+    return timeString;
+}
+
 // Initialize
-connect();
-fetchAndSendLocation();
-setInterval(updateTime, 1000);
-setInterval(fetchAndSendLocation, 3600*1000);
+connect();   //Connect to MQTT server
+fetchAndSendLocation();  // Fetch user Location and send to sever for weather updates
+setInterval(updateTime, 1000);  // Update Main Clock after every second
+setInterval(fetchAndSendLocation, 30*60*1000);   // Update Weather after every 30 mins
 window.addEventListener('online', updateStatus);
 window.addEventListener('offline', updateStatus);
 
