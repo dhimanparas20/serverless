@@ -15,6 +15,9 @@ const token = config.TOKEN;
 const user = config.USER_NAME;
 const pins = config.PINS;
 
+let locationData = null; // Object to store city, state, and pincode
+let weatherFetchInterval = 60 * 60 * 1000; // 1 hour
+
 // Global variables
 const switches = document.querySelectorAll('.switch input');
 const messageElement = document.getElementById('message');
@@ -157,11 +160,41 @@ switches.forEach(switchElement => {
     });
 });
 
-// Function to fetch and send location data
-function fetchAndSendLocation() {
-    // $('#loadingAnimation').removeClass('hidden');
-    // $('#contentContainer').addClass('hidden');
+// Function to fetch and send weather data using stored location
+function fetchWeather() {
+    if (!locationData) return; // Skip if location data is not available
 
+    if (navigator.onLine) { // Check if the device is online
+        $.ajax({
+            url: '/get_weather',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                city: locationData.city,
+                state: locationData.state,
+                pincode: locationData.pincode
+            }),
+            success: function(response) {
+                const weather = response.weather_data;
+                $('#temp').text("\ud83c\udf21\ufe0f" + (weather.tmp || '-'));
+                $('#wind_speed').text(" \ud83c\udf2c\ufe0f" + (weather.ws || '-'));
+                $('#desc').text(" \u25aa\ufe0f" + (weather.dc || '-'));
+                $('#last_fetch').text(" \u23f1\ufe0f" + formatTime() || '-');
+                if (weather.img_src) {
+                    $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
+                }
+            },
+            error: function(err) {
+                console.error('Error fetching weather data:', err);
+            }
+        });
+    } else {
+        console.warn("No internet connection. Skipping weather update.");
+    }
+}
+
+// Function to fetch user's location and reverse geocode only once
+function fetchLocationOnce() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(success, error);
     } else {
@@ -174,75 +207,30 @@ function fetchAndSendLocation() {
         const longitude = position.coords.longitude;
 
         try {
-            // Reverse Geocoding with Nominatim API
             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
             const data = await response.json();
 
-            const city = data.address.city || data.address.town || data.address.village || "Unknown City";
-            const state = data.address.state || "Unknown State";
-            const pincode = data.address.postcode || "Unknown Pincode";
-            // console.log(city,state,pincode)
+            locationData = {
+                city: data.address.city || data.address.town || data.address.village || "Unknown City",
+                state: data.address.state || "Unknown State",
+                pincode: data.address.postcode || "Unknown Pincode"
+            };
 
-            // Update the HTML dynamically
-            // $('#weather_detail_header').text(city+" Weather");
-            $('#location').text("🌍"+city);
-            // $('#state').text(state);
-            $('#pincode').text("📫"+pincode+", ");
+            // Update the UI with location details
+            $('#location').text("\ud83c\udf0d" + locationData.city);
+            $('#pincode').text("\ud83d\udce2" + locationData.pincode + ", ");
 
-            // console.log(`City: ${city}, State: ${state}, Pincode: ${pincode}`);
+            console.log(`Location fetched: ${locationData.city}, ${locationData.state}, ${locationData.pincode}`);
 
-            // Send the data to the backend via AJAX
-            $.ajax({
-                url: '/get_weather',
-                method: 'POST',
-                contentType: 'application/json', // Set the content type to JSON
-                data: JSON.stringify({
-                    city: city,
-                    state: state,
-                    pincode: pincode
-                }),
-                success: function(response) {
-                    // console.log('Weather Data:', response.weather_data);
-                    const weather = response.weather_data;
-
-                    // Update weather details in the HTML
-                    $('#temp').text("🌡️"+weather.tmp || '-');
-                    $('#wind_speed').text(" 🌬️"+weather.ws || '-');
-                    $('#desc').text(" ▫️"+weather.dc || '-');
-                    $('#last_fetch').text(" ⏱️"+formatTime() || '-');
-                    // $('#precipitation').text(weather.ppt || '-');
-                    // $('#humidity').text(weather.hm || '-');
-                    // console.log("img source:"+weather.img_src)
-                    if (weather.img_src) {
-                        $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
-                    }
-
-                    // // Update favicon and title
-                    // if (weather.img_src) {
-                    //     $('#favicon').attr('href', weather.img_src);
-                    // }
-                    // document.getElementById('pageTitle').textContent = `${city}, ${state} Weather`;
-
-                    // // Hide loading animation and show content
-                    // $('#loadingAnimation').addClass('hidden');
-                    // $('#contentContainer').removeClass('hidden');
-                },
-                error: function(err) {
-                    console.error('Error fetching weather data:', err);
-                    // $('#loadingAnimation').addClass('hidden');
-                    // $('#contentContainer').removeClass('hidden');
-                }
-            });
+            // Fetch weather immediately after location is fetched
+            fetchWeather();
         } catch (err) {
             console.error("Error fetching location details:", err);
-            // $('#loadingAnimation').addClass('hidden');
-            // $('#contentContainer').removeClass('hidden');
         }
     }
 
     function error(err) {
         console.error(`Error (${err.code}): ${err.message}`);
-        // $('#loadingAnimation').addClass('hidden');
         showGeolocationPrompt();
     }
 }
@@ -254,7 +242,7 @@ function showGeolocationPrompt() {
 // Button prompt that shows to enable location
 $('#enableLocation').on('click', function() {
     $('#geolocationPrompt').addClass('hidden');
-    fetchAndSendLocation();
+    fetchLocationOnce();
 });
 
 // Loader Animation
@@ -304,9 +292,9 @@ function formatTime() {
 
 // Initialize
 connect();   //Connect to MQTT server
-fetchAndSendLocation();  // Fetch user Location and send to sever for weather updates
-setInterval(updateTime, 1000);  // Update Main Clock after every second
-setInterval(fetchAndSendLocation, 30*60*1000);   // Update Weather after every 30 mins
+fetchLocationOnce(); // Fetch location only once on load
+setInterval(fetchWeather, weatherFetchInterval); // Update weather every 30 minutes
+setInterval(updateTime, 1000); // Update clock every second
 window.addEventListener('online', updateStatus);
 window.addEventListener('offline', updateStatus);
 
