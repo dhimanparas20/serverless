@@ -15,6 +15,7 @@ api = Api(app)
 # Environment variables with defaults
 PORT = int(os.getenv("PORT", 5000))
 DEBUG = os.getenv("DEBUG", "true").lower() == "true"
+FIX_SCRAPER_UNIT = os.getenv("FIX_SCRAPER_UNIT", "true").lower() == "true"
 HOST = os.getenv("HOST", "127.0.0.1")
 default_config = {
     "WEBSOCK_BROKER_ADDRESS": os.getenv("WEBSOCK_BROKER_ADDRESS", "test.mosquitto.org"),
@@ -41,11 +42,16 @@ def is_logged_in():
 
 # Resource classes
 class Index(Resource):
-    # Render Home page , render login page if not logged in.
+    # Render Home page, render login page if not logged in
     def get(self):
+        # Check if user is logged in
         if not is_logged_in():
             return redirect(url_for('login'))
-        return make_response(render_template('index.html', config=default_config))
+
+        # Render the page
+        return make_response(
+            render_template('index.html', config=default_config)
+        )
 
 # Login the User
 class Login(Resource):
@@ -69,9 +75,33 @@ class Logout(Resource):
 
 # Call Weather Scraper Function
 class GetWeather(Resource):
+    def get(self):
+        data = request.args.to_dict()  # Extract all query parameters as a dictionary
+
+        # Validate required parameters
+        if not all(key in data for key in ('city', 'state', 'pincode')):
+            return jsonify({
+                "status": "error",
+                "message": "Please provide 'city', 'state', and 'pincode' as query parameters."
+            }), 400
+
+        # Fetch weather data
+        weather_data = fetch_weather(data['city'], data['state'], data['pincode'], unit_fix=FIX_SCRAPER_UNIT)
+        
+        return jsonify({
+            "status": "success",
+            "weather_data": weather_data,
+        })
+    
     def post(self):
         data = request.get_json()
-        FIX_SCRAPER_UNIT = os.getenv("FIX_SCRAPER_UNIT", "true").lower() == "true"
+
+        # Input validation
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Please provide 'city', 'state', and 'pincode' as query parameters."
+            }), 400
         weather_data = fetch_weather(data['city'], data['state'], data['pincode'],unit_fix=FIX_SCRAPER_UNIT)
         return jsonify({
             "status": "success",
