@@ -112,7 +112,7 @@ function updateSwitch(pin, state) {
         // console.log("Humidity: "+jsonObject.humidity)
         // console.log("Feels Like: "+jsonObject.heat_index)
         $('#tmp').text("🌡"+jsonObject.temperature+"°C, ");
-        $('#hi').text("🙎‍♂️"+jsonObject.heat_index+"°C");
+        // $('#hi').text("🙎‍♂️"+jsonObject.heat_index+"°C");
         $('#hmdt').text("💧"+jsonObject.humidity+"%, ");
         $('#up_time').text("⏳"+jsonObject.time);
 
