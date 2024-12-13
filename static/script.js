@@ -106,6 +106,7 @@ function updateSwitch(pin, state) {
         $('#tmp').text("🌡"+jsonObject.temperature+"°C, ");
         $('#hi').text("🙎‍♂️"+jsonObject.heat_index+"°C");
         $('#hmdt').text("💧"+jsonObject.humidity+"%, ");
+        $('#up_time').text("⏳"+jsonObject.time);
 
     }
     else{
@@ -220,9 +221,10 @@ function fetchAndSendLocation() {
                     // Update weather details in the HTML
                     $('#temp').text("🌡️"+weather.tmp || '-');
                     $('#wind_speed').text(" 🌬️"+weather.ws || '-');
-                    $('#desc').text(" ⏹"+weather.dc || '-');
+                    $('#desc').text(" ▫️"+weather.dc || '-');
                     // $('#precipitation').text(weather.ppt || '-');
                     // $('#humidity').text(weather.hm || '-');
+                    console.log("img source:"+weather.img_src)
                     if (weather.img_src) {
                         $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
                     }
