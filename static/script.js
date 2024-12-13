@@ -177,8 +177,8 @@ function fetchWeather() {
             success: function(response) {
                 const weather = response.weather_data;
                 $('#temp').text("\ud83c\udf21\ufe0f" + (weather.tmp || '-'));
-                $('#wind_speed').text(" \ud83c\udf2c\ufe0f" + (weather.ws || '-'));
-                $('#desc').text(" \u25aa\ufe0f" + (weather.dc || '-'));
+                // $('#wind_speed').text(" \ud83c\udf2c\ufe0f" + (weather.ws || '-'));
+                $('#desc').text(" ▫️" + (weather.dc || '-'));
                 $('#last_fetch').text(" \u23f1\ufe0f" + formatTime() || '-');
                 if (weather.img_src) {
                     $('#weather_icon').attr('src', weather.img_src).removeClass('hidden');
