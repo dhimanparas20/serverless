@@ -1,0 +1,14 @@
+services:
+  web:
+    container_name: flask_gunicorn_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:5000"
+    restart: unless-stopped
+    env_file: 
+      - .env
+    environment: 
+      - GUNICORN_CMD_ARGS="--workers 4 --bind 0.0.0.0:5000"
+    user: mst
