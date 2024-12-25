@@ -29,6 +29,7 @@ dist/
 *.md
 
 # Docker and compose-related files
+compose.yml
 docker-compose.yml
 *.tar
 
