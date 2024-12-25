@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, make_response
 from flask_restful import Api, Resource
 from dotenv import load_dotenv
+from icecream import ic
 import os
 from scrape import fetch_weather
 
@@ -84,9 +85,12 @@ class GetWeather(Resource):
                 "status": "error",
                 "message": "Please provide 'city', 'state', and 'pincode' as query parameters."
             }), 400
-
+        
+        city = "Kuthera" if data['city'] == "Unknown City" else data['city']
+        state = "Himachal Pradesh" if data['city'] == "Unknown City" else data['state']
+        pincode = "177020" if data['city'] == "Unknown City" else data['pincode']
         # Fetch weather data
-        weather_data = fetch_weather(data['city'], data['state'], data['pincode'], unit_fix=FIX_SCRAPER_UNIT)
+        weather_data = fetch_weather(city, state, pincode, unit_fix=FIX_SCRAPER_UNIT)
         
         return jsonify({
             "status": "success",
@@ -95,14 +99,19 @@ class GetWeather(Resource):
     
     def post(self):
         data = request.get_json()
-
+  
         # Input validation
         if not data:
             return jsonify({
                 "status": "error",
                 "message": "Please provide 'city', 'state', and 'pincode' as query parameters."
             }), 400
-        weather_data = fetch_weather(data['city'], data['state'], data['pincode'],unit_fix=FIX_SCRAPER_UNIT)
+        
+        city = "Kuthera" if data['city'] == "Unknown City" else data['city']
+        state = "Himachal Pradesh" if data['city'] == "Unknown City" else data['state']
+        pincode = "177020" if data['city'] == "Unknown City" else data['pincode']
+
+        weather_data = fetch_weather(city, state, pincode, unit_fix=FIX_SCRAPER_UNIT)
         return jsonify({
             "status": "success",
             "weather_data": weather_data,

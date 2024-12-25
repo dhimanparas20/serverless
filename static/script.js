@@ -219,6 +219,11 @@ function fetchLocationOnce() {
             // Update the UI with location details
             $('#location').text("\ud83c\udf0d" + locationData.city);
             $('#pincode').text("\ud83d\udce2" + locationData.pincode + ", ");
+            //Location hack for my hometown
+            if (locationData.city=="Unknown City"){
+                $('#location').text("\ud83c\udf0d" + "Ubak");
+                $('#pincode').text("\ud83d\udce2" + "177020" + ", ");
+            }
 
             console.log(`Location fetched: ${locationData.city}, ${locationData.state}, ${locationData.pincode}`);
 
